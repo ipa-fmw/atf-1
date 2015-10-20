@@ -234,8 +234,27 @@ $('.sidebar > ul.nav li a')
   });
 
 $(document).on('click', 'div.form-group-options .add_entry', function () {
+  var dropdown = (Math.random()*100).round(0);
+  $('.form-group-options').find('.test').append('<div class="input-group entry">' +
+    '<input type="text" class="form-control entry" placeholder="Entry name">' +
+    '<span class="input-group-btn">' +
+    '<button class="btn btn-default dropdown-toggle input-group-addon-add" type="button"  id="dropdownMenu' + dropdown + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
+    '<span class="glyphicon glyphicon-plus"></span>' +
+    '<span class="caret"></span>' +
+    '</button>' +
+    '<ul class="dropdown-menu" aria-labelledby="dropdownMenu' + dropdown + '">' +
+    '<li><a href="#" class="add_entry">Add entry</a></li>' +
+    '<li><a href="#" class="add_array">Add array</a></li>' +
+    '</ul>' +
+    '</span>' +
+    '</div>');
+  $(this).remove();
+});
+
+$(document).on('click', 'div.form-group-options .add_array', function () {
+  var dropdown = (Math.random()*100).round(0);
   $('.form-group-options').find('.test').append('<div class="input-group">' +
-    '<input type="text" class="form-control" placeholder="Test name">' +
+    '<input type="text" class="form-control entry" placeholder="Array name">' +
     '<span class="input-group-btn">' +
     '<button class="btn btn-default dropdown-toggle input-group-addon-add" type="button"  id="dropdownMenu' + dropdown + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
     '<span class="glyphicon glyphicon-plus"></span>' +
@@ -255,7 +274,7 @@ $(document).on('click', 'div.form-group-options .input-group-addon-remove', func
 });
 
 $(document).on('click', '#add_test', function () {
-  var dropdown = $('.test').length++;
+  var dropdown = (Math.random()*100).round(0);
   $('.form-group-options').append('<div class="test">' +
     '<div class="input-group">' +
     '<input type="text" class="form-control" placeholder="Test name">' +
