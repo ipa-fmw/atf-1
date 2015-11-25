@@ -1,0 +1,10 @@
+time:
+  handler: CalculateTimeParamHandler
+path_length:
+  handler: CalculatePathLengthParamHandler
+resources:
+  handler: CalculateResourcesParamHandler
+obstacle_distance:
+  handler: CalculateDistanceToObstaclesParamHandler
+# example:
+#   handler: ExampleParamHandler
