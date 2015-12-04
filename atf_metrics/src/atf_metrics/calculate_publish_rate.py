@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import time
+
 import rospy
 import rostopic
 
@@ -59,7 +60,7 @@ class CalculatePublishRate:
             result = 0
             if (rate - self.hz) > self.error or (self.hz - rate) > self.error:
                 result = rate - self.hz
-            #return "publish_rate", {self.topic: round(rate, 3)}
+            # return "publish_rate", {self.topic: round(rate, 3)}
             return "publish_rate", {self.topic: round(result, 3)}
         else:
             return False

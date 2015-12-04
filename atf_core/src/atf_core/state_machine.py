@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-import rospy
-
 from threading import Thread
+
+import rospy
 
 
 def threaded(fn):

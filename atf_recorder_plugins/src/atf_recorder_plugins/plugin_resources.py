@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-import rospy
 import psutil
 import time
 import xmlrpclib
-import rosnode
-
 from copy import copy
 from re import findall
 from subprocess import check_output, CalledProcessError
+
+import rosnode
+import rospy
 from atf_msgs.msg import *
 from atf_recorder import BagfileWriter
 
@@ -18,7 +18,7 @@ class RecordResources:
         self.test_config = config_file
 
         self.resources_timer_frequency = 4.0  # Hz
-        self.timer_interval = 1/self.resources_timer_frequency
+        self.timer_interval = 1 / self.resources_timer_frequency
 
         self.testblock_list = self.create_testblock_list()
         self.pid_list = self.create_pid_list()

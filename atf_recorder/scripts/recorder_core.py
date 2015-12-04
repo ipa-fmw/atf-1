@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-import rospy
+import os
 import rospkg
-import rostopic
+import time
+import yaml
+from threading import Lock
+
+import atf_recorder_plugins
 import rosbag
 import rosparam
-import yaml
-import time
-import os
-import atf_recorder_plugins
-
-from threading import Lock
+import rospy
+import rostopic
 from atf_msgs.msg import *
-from atf_recorder.srv import *
 from atf_recorder import BagfileWriter
+from atf_recorder.srv import *
 
 
 class ATFRecorder:

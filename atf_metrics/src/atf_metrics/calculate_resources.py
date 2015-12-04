@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import numpy
-import rospy
 
+import rospy
 from atf_msgs.msg import *
 
 

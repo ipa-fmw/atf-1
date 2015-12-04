@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-import rospy
 import yaml
-import rosparam
+from threading import Lock
 
+import rosparam
+import rospy
 from atf_msgs.msg import *
 from atf_status_server.srv import *
-from threading import Lock
 
 
 class ATFServer:
