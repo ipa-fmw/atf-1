@@ -129,7 +129,7 @@ class RecordResources:
             self.update_requested_nodes(msg)
 
         if msg.trigger.trigger == Trigger.ERROR:
-            self.res_pipeline = []
+            self.res_pipeline = {}
 
     def create_pid_list(self):
         node_list = {}

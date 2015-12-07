@@ -2,6 +2,7 @@
 from copy import copy
 
 import rospy
+from atf_msgs.msg import *
 from atf_recorder import BagfileWriter
 from obstacle_distance.srv import GetObstacleDistance
 
@@ -17,7 +18,7 @@ class RecordObstacleDistance:
 
         self.testblock_list = self.create_testblock_list()
         self.requested_objects = {}
-        self.res_pipeline = {}
+        self.ob_pipeline = {}
 
         self.BfW = BagfileWriter(bag_file, write_lock)
 
@@ -29,13 +30,54 @@ class RecordObstacleDistance:
         rospy.Timer(rospy.Duration.from_sec(self.timer_interval), self.collect_obstacle_distances)
 
     def trigger_callback(self, msg):
-        # Process Trigger
-        pass
+
+        # Only save node resources if testblock requests them
+        if msg.name in self.testblock_list:
+            self.update_requested_objects(msg)
+
+        if msg.trigger.trigger == Trigger.ERROR:
+            self.ob_pipeline = {}
+
+    def update_requested_objects(self, msg):
+
+        if msg.trigger.trigger == Trigger.ACTIVATE:
+            for co_object in self.testblock_list[msg.name]:
+                if co_object not in self.requested_objects:
+                    self.requested_objects[co_object] = copy(self.testblock_list[msg.name][co_object])
+                    self.ob_pipeline[co_object] = copy(self.testblock_list[msg.name][co_object])
+                else:
+                    for link in self.testblock_list[msg.name][co_object]:
+                        self.requested_objects[co_object].append(link)
+                        if link not in self.ob_pipeline[co_object]:
+                            self.ob_pipeline[co_object].append(link)
+
+        elif msg.trigger.trigger == Trigger.FINISH:
+            for co_object in self.testblock_list[msg.name]:
+                for link in self.testblock_list[msg.name][co_object]:
+                    self.requested_objects[co_object].remove(link)
+                    if link not in self.requested_objects[co_object]:
+                        self.ob_pipeline[co_object].remove(link)
+                    if len(self.requested_objects[co_object]) == 0:
+                        del self.requested_objects[co_object]
+                        del self.ob_pipeline[co_object]
 
     def collect_obstacle_distances(self, event):
-        pipeline = copy(self.res_pipeline)
+        pipeline = copy(self.ob_pipeline)
         if not len(pipeline) == 0:
-            pass
+            for co_object in self.ob_pipeline:
+                for link in self.ob_pipeline[co_object]:
+                    """
+                    string[] links
+                    string[] objects
+                    ---
+                    string[] link_to_object
+                    float64[] distances
+                    """
+                    if isinstance(link, list):
+                        request = GetObstacleDistanceRequest(link)
+
+                    if co_object == "all":
+
             # self.BfW.write_to_bagfile(topic, msg, rospy.Time.from_sec(time.time()))
 
     def create_testblock_list(self):
