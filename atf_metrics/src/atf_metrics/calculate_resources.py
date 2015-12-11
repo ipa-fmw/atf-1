@@ -10,7 +10,7 @@ class CalculateResourcesParamHandler:
         """
         Class for returning the corresponding metric class with the given parameter.
         """
-        self.params = []
+        self.params = {}
 
     def parse_parameter(self, params):
         """

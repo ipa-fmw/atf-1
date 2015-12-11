@@ -7,7 +7,7 @@ import rostopic
 
 class CalculatePublishRateParamHandler:
     def __init__(self):
-        self.params = []
+        self.params = {}
 
     def parse_parameter(self, params):
         self.params = params

@@ -9,7 +9,7 @@ class CalculateTimeParamHandler:
         """
         Class for returning the corresponding metric class with the given parameter.
         """
-        self.params = []
+        self.params = {}
 
     @staticmethod
     def parse_parameter(params):

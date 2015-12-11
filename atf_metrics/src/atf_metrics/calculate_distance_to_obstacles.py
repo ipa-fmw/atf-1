@@ -7,7 +7,7 @@ from atf_msgs.msg import ObstacleDistance
 
 class CalculateDistanceToObstaclesParamHandler:
     def __init__(self):
-        self.params = ""
+        self.params = {}
 
     @staticmethod
     def parse_parameter(params):
