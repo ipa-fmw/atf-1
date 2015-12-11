@@ -3,4 +3,5 @@ from calculate_path_length import CalculatePathLength, CalculatePathLengthParamH
 from calculate_publish_rate import CalculatePublishRate, CalculatePublishRateParamHandler
 from calculate_resources import CalculateResources, CalculateResourcesParamHandler
 from calculate_time import CalculateTime, CalculateTimeParamHandler
+from check_interface import CheckInterface, CheckInterfaceParamHandler
 # from example import Example, ExampleParamHandler
