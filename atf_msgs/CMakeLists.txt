@@ -23,6 +23,8 @@ add_message_files(
         NodeResources.msg
         ObstacleDistance.msg
         ObstacleDistanceLink.msg
+        TestblockInterface.msg
+        TestblockInterfaceStatus.msg
 )
 
 generate_messages(
