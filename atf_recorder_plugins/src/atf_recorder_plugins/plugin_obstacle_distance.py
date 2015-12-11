@@ -53,7 +53,7 @@ class RecordObstacleDistance:
 
         for testblock in pipeline:
             msg_link = ObstacleDistanceLink()
-            for item in self.test_config[testblock]:
+            for item in self.test_config[testblock]["obstacle_distance"]:
                 if len(item) == 1:
                     co_object = []
                 else:
