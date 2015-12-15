@@ -23,8 +23,9 @@ class RecordObstacleDistance:
 
         # Wait for obstacle_distance node
         rospy.loginfo(rospy.get_name() + ": Waiting for obstacle distance node...")
-        rospy.wait_for_service(self.robot_config_file["obstacle_distance"]["services"])
-        self.obstacle_distance_server = rospy.ServiceProxy(self.robot_config_file["obstacle_distance"]["services"],
+        rospy.wait_for_service(self.robot_config_file["obstacle_distance"]["services"][0])
+        rospy.loginfo(rospy.get_name() + ": Obstacle distance node found!")
+        self.obstacle_distance_server = rospy.ServiceProxy(self.robot_config_file["obstacle_distance"]["services"][0],
                                                            GetObstacleDistance)
 
         rospy.Timer(rospy.Duration.from_sec(self.timer_interval), self.collect_obstacle_distances)
@@ -40,14 +41,16 @@ class RecordObstacleDistance:
 
     def update_requested_testblocks(self, msg):
 
-        if msg.trigger.trigger == Trigger.ACTIVATE:
+        if msg.trigger.trigger == Trigger.ACTIVATE and "obstacle_distance" in self.test_config[msg.name]:
             self.testblock_pipeline.append(msg.name)
 
-        elif msg.trigger.trigger == Trigger.FINISH:
+        elif msg.trigger.trigger == Trigger.FINISH and msg.name in self.testblock_pipeline:
             self.testblock_pipeline.remove(msg.name)
 
     def collect_obstacle_distances(self, event):
         pipeline = copy(self.testblock_pipeline)
+        if len(pipeline) == 0:
+            return
         links = {}
         msg = ObstacleDistance()
 
