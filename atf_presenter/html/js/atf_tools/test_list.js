@@ -487,6 +487,50 @@ var TestList = {
         },
         plotOptions: {},
         tooltip: plot_tooltip
+      },
+      publish_rate: {
+        chart: {
+          defaultSeriesType: 'column',
+          type: 'column',
+          zoomType: 'xy'
+        },
+        title: {
+          text: 'Difference to given publish rate'
+        },
+        yAxis: {
+          title: {
+            text: 'Publish rate [hz]'
+          }
+        },
+        xAxis: {
+          labels: {
+            enabled: false
+          }
+        },
+        plotOptions: {},
+        tooltip: plot_tooltip
+      },
+      interface: {
+        chart: {
+          defaultSeriesType: 'column',
+          type: 'column',
+          zoomType: 'xy'
+        },
+        title: {
+          text: 'Interface check'
+        },
+        yAxis: {
+          title: {
+            text: 'Available'
+          }
+        },
+        xAxis: {
+          labels: {
+            enabled: false
+          }
+        },
+        plotOptions: {},
+        tooltip: plot_tooltip
       }
     };
 

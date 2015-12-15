@@ -3,7 +3,8 @@ var TestComparison = {
   categories: {
     speed: ['time'],
     resources: ['resources'],
-    efficiency: ['path_length', 'obstacle_distance']
+    efficiency: ['path_length', 'obstacle_distance'],
+    technic: ['interface', 'publish_rate']
   },
   charts: {
     ids: {},
@@ -13,7 +14,8 @@ var TestComparison = {
   weight: {
     speed: 100,
     resources: 100,
-    efficiency: 100
+    efficiency: 100,
+    technic: 100
   },
   getMaximum: function (files) {
     var max = {};
@@ -31,7 +33,7 @@ var TestComparison = {
             } else {
               $.each(level_2_data, function (level_3, level_3_data) {
                 if (level_3_data.hasOwnProperty('max')) {
-                  // Path length & obstacle distance
+                  // Path length & obstacle distance & publish rate & interface
                   if (!max.hasOwnProperty(level_2)) max[level_2] = 0;
                   if (level_3_data['max'] > max[level_2]) {
                     max[level_2] = level_3_data['max'];
@@ -168,7 +170,7 @@ var TestComparison = {
         } else {
           $.each(level_2_data, function (level_3, level_3_data) {
             if (level_3_data.hasOwnProperty('max')) {
-              // Path length & obstacle distance
+              // Path length & obstacle distance & publish rate & interface
               if (!temp_testblock.hasOwnProperty(level_2)) {
                 temp_testblock[level_2] = {
                   total: max_values[level_2],
@@ -178,7 +180,7 @@ var TestComparison = {
                 };
               }
               if (temp_testblock[level_2]['total'] != 0) {
-                if (level_2 === 'obstacle_distance') {
+                if (level_2 === 'obstacle_distance' || level_2 === 'interface') {
                   temp_testblock[level_2]['average'].push(level_3_data['average'] / temp_testblock[level_2]['total']);
                   temp_testblock[level_2]['min'].push(level_3_data['min'] / temp_testblock[level_2]['total']);
                   temp_testblock[level_2]['max'].push(level_3_data['max'] / temp_testblock[level_2]['total']);
@@ -255,7 +257,7 @@ var TestComparison = {
           }
         });
       } else {
-        // Time & Path length & Obstacle distance
+        // Time & Path length & Obstacle distance & Publish rate & Interface
         if (metric_data['average'].length != 0) {
           temp_metrics[metric]['average'].push(math.mean(metric_data['average']));
           temp_metrics[metric]['min'].push(math.mean(metric_data['min']));
@@ -312,6 +314,25 @@ var TestComparison = {
           temp['average'] = math.mean(tp['average']) * this_class.weight[category];
           temp['min'] = math.mean(tp['min']) * this_class.weight[category];
           temp['max'] = math.mean(tp['max']) * this_class.weight[category];
+        } else if (category === 'technic') {
+          var tc = {
+            average: [],
+            min: [],
+            max: []
+          };
+          if (temp_metrics.hasOwnProperty('interface')) {
+            tc['average'].push(temp_metrics['interface']['average']);
+            tc['min'].push(temp_metrics['interface']['min']);
+            tc['max'].push(temp_metrics['interface']['max']);
+          }
+          if (temp_metrics.hasOwnProperty('publish_rate')) {
+            tc['average'].push(temp_metrics['publish_rate']['average']);
+            tc['min'].push(temp_metrics['publish_rate']['min']);
+            tc['max'].push(temp_metrics['publish_rate']['max']);
+          }
+          temp['average'] = math.mean(tc['average']) * this_class.weight[category];
+          temp['min'] = math.mean(tc['min']) * this_class.weight[category];
+          temp['max'] = math.mean(tc['max']) * this_class.weight[category];
         }
         results[category]['average'] = temp['average'] * (test_config['test_repetitions'] - test_config['tests_failed']) / test_config['test_repetitions'];
         results[category]['min'] = temp['min'] * (test_config['test_repetitions'] - test_config['tests_failed']) / test_config['test_repetitions'];
