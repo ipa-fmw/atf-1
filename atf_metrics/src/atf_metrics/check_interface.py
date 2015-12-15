@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-import time
 
 import rospy
-from actionlib import SimpleActionClient
 from atf_msgs.msg import *
 
 
@@ -16,7 +14,7 @@ class CheckInterfaceParamHandler:
     @staticmethod
     def parse_parameter(params):
         """
-        Method that returns the metric method with the given parameter.
+        Method that returns the metric class with the given parameter.
         :param params: Parameter
         """
 
@@ -26,51 +24,47 @@ class CheckInterfaceParamHandler:
 class CheckInterface:
     def __init__(self, parameter):
         self.parameter = parameter
+        self.active = False
         self.finished = False
         self.results = {}
 
         rospy.Subscriber("/atf/interface", TestblockInterface, self.check_interface)
 
+    def check_interface(self, msg):
+        if self.active:
+            if "publisher" in self.parameter:
+                for publisher in self.parameter["publisher"]:
+                    for testblock in msg.testblock:
+                        for idx, pub in enumerate(testblock.publisher):
+                            if pub == publisher and pub not in self.results:
+                                self.results[pub] = int(testblock.publisher_results[idx])
+
+            if "subscriber" in self.parameter:
+                for subscriber in self.parameter["subscriber"]:
+                    for testblock in msg.testblock:
+                        for idx, sub in enumerate(testblock.subscriber):
+                            if sub == subscriber and sub not in self.results:
+                                self.results[sub] = int(testblock.subscriber_results[idx])
+
+            if "actions" in self.parameter:
+                for action in self.parameter["actions"]:
+                    for testblock in msg.testblock:
+                        for idx, act in enumerate(testblock.actions):
+                            if act == action and act not in self.results:
+                                self.results[act] = int(testblock.actions_results[idx])
+
+            if "services" in self.parameter:
+                for service in self.parameter["services"]:
+                    for testblock in msg.testblock:
+                        for idx, serv in enumerate(testblock.services):
+                            if serv == service and serv not in self.results:
+                                self.results[serv] = int(testblock.services_results[idx])
+
     def start(self):
-        # Check for publisher
-        for publisher in self.parameter["publisher"]:
-            try:
-                rospy.wait_for_message(publisher["topic"], publisher["type"], timeout=self.timeout)
-            except rospy.ROSException:
-                self.results["publisher"].update({publisher["topic"]: 0})
-            else:
-                self.results["publisher"].update({publisher["topic"]: 1})
-
-        # Check for subscriber
-        for subscriber in self.parameter["subscriber"]:
-            pub = rospy.Publisher(subscriber["topic"], subscriber["type"])
-            time_start = time.time()
-            while (time.time() - time_start) < self.timeout:
-                if pub.get_num_connections() > 0:
-                    self.results["subscriber"].update({subscriber["topic"]: 1})
-                    break
-                else:
-                    self.results["publisher"].update({subscriber["topic"]: 0})
-
-        # Check for services
-        for service in self.parameter["services"]:
-            try:
-                rospy.wait_for_service(service, timeout=self.timeout)
-            except rospy.ROSException:
-                self.results["services"].update({service: 0})
-            else:
-                self.results["services"].update({service: 1})
-
-        # Check for actions
-        for action in self.parameter["actions"]:
-            client = SimpleActionClient(action["topic"], action["type"])
-
-            if client.wait_for_server(rospy.Duration(self.timeout)):
-                self.results["actions"].update({action["topic"]: 1})
-            else:
-                self.results["actions"].update({action["topic"]: 0})
+        self.active = True
 
     def stop(self):
+        self.active = False
         self.finished = True
 
     @staticmethod
