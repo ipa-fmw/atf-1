@@ -1,12 +1,13 @@
 #!/usr/bin/env python
+from types import *
+
 import rospy
 from atf_msgs.msg import ObstacleDistance
-from types import *
 
 
 class CalculateDistanceToObstaclesParamHandler:
     def __init__(self):
-        self.params = ""
+        self.params = {}
 
     @staticmethod
     def parse_parameter(params):

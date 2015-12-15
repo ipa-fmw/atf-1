@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-import rospy
 import yaml
-import rosparam
+from threading import Lock
 
+import rosparam
+import rospy
 from atf_msgs.msg import *
 from atf_status_server.srv import *
-from threading import Lock
 
 
 class ATFServer:
@@ -16,13 +16,14 @@ class ATFServer:
         sub = rospy.Subscriber("/atf/test_status", TestStatus, self.status_update_callback, queue_size=10)
 
         # Wait for publisher
+        rospy.loginfo(rospy.get_name() + ": Waiting for subscribers...")
         num_subscriber = sub.get_num_connections()
         while num_subscriber == 0:
             num_subscriber = sub.get_num_connections()
 
         rospy.Service("atf/get_test_status", GetTestStatus, self.status_service_callback)
 
-        rospy.loginfo("ATF server started!")
+        rospy.loginfo(rospy.get_name() + ": Node started!")
 
     def status_update_callback(self, data):
 
