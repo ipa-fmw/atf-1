@@ -88,7 +88,7 @@ class ATFRecorder:
         testblock_list = {}
         for testblock in self.test_config:
             for metric in self.test_config[testblock]:
-                if metric in self.robot_config_file:
+                if metric in self.robot_config_file and "topics" in self.robot_config_file[metric]:
                     try:
                         testblock_list[testblock]
                     except KeyError:
@@ -175,7 +175,7 @@ class ATFRecorder:
 
         for item in self.test_config:
             for metric in self.test_config[item]:
-                if metric in self.robot_config_file:
+                if metric in self.robot_config_file and "topics" in self.robot_config_file[metric]:
                     # Get topics from robot_config.yaml
                     for topic in self.robot_config_file[metric]["topics"]:
                         if topic not in topics:
