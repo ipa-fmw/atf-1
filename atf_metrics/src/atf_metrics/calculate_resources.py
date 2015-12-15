@@ -14,7 +14,7 @@ class CalculateResourcesParamHandler:
 
     def parse_parameter(self, params):
         """
-        Method that returns the metric method with the given parameter.
+        Method that returns the metric class with the given parameter.
         :param params: Parameter
         """
         self.params = params

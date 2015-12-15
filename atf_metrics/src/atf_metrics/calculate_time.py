@@ -14,7 +14,7 @@ class CalculateTimeParamHandler:
     @staticmethod
     def parse_parameter(params):
         """
-        Method that returns the metric method with the given parameter.
+        Method that returns the metric class with the given parameter.
         :param params: Parameter
         """
 
