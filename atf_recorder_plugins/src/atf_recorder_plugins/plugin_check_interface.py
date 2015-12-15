@@ -102,7 +102,6 @@ class CheckInterface:
                     else:
                         testblock_interface.actions_results.append(False)
 
-            testblock_interface.stamp = rospy.Time.from_sec(time.time())
             msg.testblock.append(testblock_interface)
 
         self.BfW.write_to_bagfile(self.topic, msg, rospy.Time.from_sec(time.time()))

@@ -1,4 +1,3 @@
-time stamp
 string[] publisher
 bool[] publisher_results
 string[] subscriber
