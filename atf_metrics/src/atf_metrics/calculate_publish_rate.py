@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import math
 import time
 
 import rospy
@@ -59,8 +60,7 @@ class CalculatePublishRate:
             rate = self.counter / (self.stop_time - self.start_time)
             result = 0
             if (rate - self.hz) > self.error or (self.hz - rate) > self.error:
-                result = rate - self.hz
-            # return "publish_rate", {self.topic: round(rate, 3)}
+                result = math.fabs(rate - self.hz)
             return "publish_rate", {self.topic: round(result, 3)}
         else:
             return False
