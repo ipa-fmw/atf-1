@@ -4,7 +4,6 @@ project(atf_msgs)
 find_package(catkin
     REQUIRED COMPONENTS
         message_generation
-        geometry_msgs
         std_msgs
 )
 
@@ -24,6 +23,8 @@ add_message_files(
         NodeResources.msg
         ObstacleDistance.msg
         ObstacleDistanceLink.msg
+        TestblockInterface.msg
+        TestblockInterfaceStatus.msg
 )
 
 generate_messages(

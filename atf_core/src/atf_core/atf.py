@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-import rospy
-import rosparam
 import json
 import yaml
-
-from atf_msgs.msg import *
 from copy import copy
+
+import rosparam
+import rospy
+from atf_msgs.msg import *
 
 
 class ATF:

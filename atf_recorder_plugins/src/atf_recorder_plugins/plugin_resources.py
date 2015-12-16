@@ -1,24 +1,24 @@
 #!/usr/bin/env python
-import rospy
 import psutil
 import time
 import xmlrpclib
-import rosnode
-
 from copy import copy
 from re import findall
 from subprocess import check_output, CalledProcessError
+
+import rosnode
+import rospy
 from atf_msgs.msg import *
 from atf_recorder import BagfileWriter
 
 
 class RecordResources:
-    def __init__(self, topic_prefix, config_file, write_lock, bag_file):
+    def __init__(self, topic_prefix, config_file, robot_config_file, write_lock, bag_file):
         self.topic_prefix = topic_prefix
         self.test_config = config_file
 
         self.resources_timer_frequency = 4.0  # Hz
-        self.timer_interval = 1/self.resources_timer_frequency
+        self.timer_interval = 1 / self.resources_timer_frequency
 
         self.testblock_list = self.create_testblock_list()
         self.pid_list = self.create_pid_list()
@@ -129,7 +129,7 @@ class RecordResources:
             self.update_requested_nodes(msg)
 
         if msg.trigger.trigger == Trigger.ERROR:
-            self.res_pipeline = []
+            self.res_pipeline = {}
 
     def create_pid_list(self):
         node_list = {}

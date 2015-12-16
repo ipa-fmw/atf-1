@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import rospy
+from atf_msgs.msg import Status, Trigger
 
 from state_machine import StateMachine
-from atf_msgs.msg import Status, Trigger
 
 
 class Testblock:

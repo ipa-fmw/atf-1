@@ -1,19 +1,18 @@
 #!/usr/bin/env python
-import yaml
-import json
-import re
 import itertools as it
-import rospkg
-import os
-import lxml.etree
+import json
 import lxml.builder
+import os
+import re
+import rospkg
 import shutil
 import sys
-
-from xml.etree import ElementTree
-from xml.dom import minidom
-
+import yaml
 from copy import deepcopy, copy
+from xml.dom import minidom
+from xml.etree import ElementTree
+
+import lxml.etree
 
 
 class GenerateTests:

@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-import rospy
+import os
 import rospkg
-import rostopic
+import time
+import yaml
+from threading import Lock
+
+import atf_recorder_plugins
 import rosbag
 import rosparam
-import yaml
-import time
-import os
-import atf_recorder_plugins
-
-from threading import Lock
+import rospy
+import rostopic
 from atf_msgs.msg import *
-from atf_recorder.srv import *
 from atf_recorder import BagfileWriter
+from atf_recorder.srv import *
 
 
 class ATFRecorder:
@@ -38,27 +38,20 @@ class ATFRecorder:
         # Init metric recorder
         self.recorder_plugin_list = []
         for (key, value) in recorder_config.iteritems():
-            self.recorder_plugin_list.append(getattr(atf_recorder_plugins, value)(self.topic, self.test_config,
-                                                                                  self.lock_write, self.bag))
+            self.recorder_plugin_list.append(getattr(atf_recorder_plugins, value)(self.topic,
+                                                                                  self.test_config,
+                                                                                  self.robot_config_file,
+                                                                                  self.lock_write,
+                                                                                  self.bag))
 
         self.topic_pipeline = []
         self.active_sections = []
         self.requested_topics = []
         self.testblock_list = self.create_testblock_list()
 
-        # Wait for obstacle_distance node
-        rospy.loginfo("Waiting for obstacle distance node...")
-        ob_sub = rospy.Subscriber("/atf/obstacle_distance", ObstacleDistance, self.global_topic_callback, queue_size=1,
-                                  callback_args="/atf/obstacle_distance")
-
-        num_subscriber = ob_sub.get_num_connections()
-        while num_subscriber == 0:
-            num_subscriber = ob_sub.get_num_connections()
-
         for topic in self.get_topics():
-            if topic != "/atf/obstacle_distance":
-                msg_type = rostopic.get_topic_class(topic, blocking=True)[0]
-                rospy.Subscriber(topic, msg_type, self.global_topic_callback, queue_size=5, callback_args=topic)
+            msg_type = rostopic.get_topic_class(topic, blocking=True)[0]
+            rospy.Subscriber(topic, msg_type, self.global_topic_callback, queue_size=5, callback_args=topic)
 
         self.test_status_publisher = rospy.Publisher(self.topic + "test_status", TestStatus, queue_size=10)
         rospy.Service(self.topic + "recorder_command", RecorderCommand, self.command_callback)
@@ -76,7 +69,7 @@ class ATFRecorder:
 
         self.test_status_publisher.publish(test_status)
 
-        rospy.loginfo("ATF recorder started!")
+        rospy.loginfo(rospy.get_name() + ": Node started!")
 
     def shutdown(self):
         self.lock_write.acquire()
@@ -95,7 +88,7 @@ class ATFRecorder:
         testblock_list = {}
         for testblock in self.test_config:
             for metric in self.test_config[testblock]:
-                if metric in self.robot_config_file:
+                if metric in self.robot_config_file and "topics" in self.robot_config_file[metric]:
                     try:
                         testblock_list[testblock]
                     except KeyError:
@@ -103,6 +96,18 @@ class ATFRecorder:
                     else:
                         for topic in self.robot_config_file[metric]["topics"]:
                             testblock_list[testblock].append(topic)
+                else:
+                    try:
+                        if "topics" in self.test_config[testblock][metric]:
+                            try:
+                                testblock_list[testblock]
+                            except KeyError:
+                                testblock_list[testblock] = self.test_config[testblock][metric]["topics"]
+                            else:
+                                for topic in self.test_config[testblock][metric]["topics"]:
+                                    testblock_list[testblock].append(topic)
+                    except TypeError:
+                        pass
 
         return testblock_list
 
@@ -170,11 +175,20 @@ class ATFRecorder:
 
         for item in self.test_config:
             for metric in self.test_config[item]:
-                if metric in self.robot_config_file:
+                if metric in self.robot_config_file and "topics" in self.robot_config_file[metric]:
+                    # Get topics from robot_config.yaml
                     for topic in self.robot_config_file[metric]["topics"]:
                         if topic not in topics:
                             topics.append(topic)
-
+                else:
+                    try:
+                        if "topics" in self.test_config[item][metric]:
+                            # Get topics from test_config.yaml
+                            for topic in self.test_config[item][metric]["topics"]:
+                                if topic not in topics:
+                                    topics.append(topic)
+                    except TypeError:
+                        pass
         return topics
 
 

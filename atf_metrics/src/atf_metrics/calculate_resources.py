@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import numpy
-import rospy
 
+import rospy
 from atf_msgs.msg import *
 
 
@@ -10,11 +10,11 @@ class CalculateResourcesParamHandler:
         """
         Class for returning the corresponding metric class with the given parameter.
         """
-        self.params = []
+        self.params = {}
 
     def parse_parameter(self, params):
         """
-        Method that returns the metric method with the given parameter.
+        Method that returns the metric class with the given parameter.
         :param params: Parameter
         """
         self.params = params

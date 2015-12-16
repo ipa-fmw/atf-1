@@ -1,2 +1,4 @@
 resources: RecordResources
+obstacle_distance: RecordObstacleDistance
+interface: CheckInterface
 # example: Example

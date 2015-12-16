@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-import rospy
-import yaml
-import rosparam
 import os
-import unittest
-import rostest
 import rospkg
+import unittest
+import yaml
 
-from atf_core import ATF, Testblock
 import atf_metrics
+import rosparam
+import rospy
+import rostest
+from atf_core import ATF, Testblock
 
 
 class TestBuilder:
