@@ -5,7 +5,7 @@
 
   <license>LGPL</license>
 
-  <maintainer email="florian.koehler@ipa.fraunhofer.de">Florian Koehler</maintainer>
+  <maintainer email="koellsch86@googlemail.com">Florian Koehler</maintainer>
 
   <buildtool_depend>catkin</buildtool_depend>
 
